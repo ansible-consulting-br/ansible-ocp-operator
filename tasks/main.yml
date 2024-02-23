@@ -9,7 +9,8 @@
     register: clone_result
 
 - name: Debug
-  debug: clone_result
+  debug:
+    var: clone_result
 
 - name: Validando repositório clonado
   assert:
