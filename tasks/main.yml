@@ -7,9 +7,6 @@
     single_branch: yes
     version: main
 
-- name: Executar o comando tree
-  command: ls -la /caminho/do/seu/diretorio
-
 #- name: Print several lines of text
 #  vars:
 #    msg: |
@@ -18,7 +15,6 @@
 #         And here could be more...
 #  debug:
 #    msg: "{{ msg.split('\n') }}"
-
 
 - name: Gerando template do operator
   kubernetes.core.helm_template:
