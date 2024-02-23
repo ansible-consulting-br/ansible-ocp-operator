@@ -6,6 +6,17 @@
     dest: "/tmp/helm-operator/"
     single_branch: yes
     version: main
+    register: clone_result
+
+- name: Debug
+  debug: clone_result
+
+- name: Validando repositório clonado
+  assert:
+    that:
+      - clone_result.changed
+    success_msg: "Repositório clonado com sucesso."
+    fail_msg: "Erro ao clonar repositório."
 
 #- name: Print several lines of text
 #  vars:
@@ -16,24 +27,49 @@
 #  debug:
 #    msg: "{{ msg.split('\n') }}"
 
-- name: Gerando template do operator
-  kubernetes.core.helm_template:
-    output_dir: "/tmp/helm-operator-output/"
-    chart_ref: "/tmp/helm-operator/"
-    values: 
-      name: "{{ operator_name }}"
-      namespace: "{{ operator_namespace }}"
-      subscription:
-        channel: "{{ subscription_channel }}"
-        installPlanApproval: "{{ subscription_plan_approval }}"
-        source:  "{{ subscription_source }}"
-        sourceNamespace: "{{ subscription_source_namespace }}"
+#- name: Gerando template do operator
+#  kubernetes.core.helm_template:
+#    output_dir: "/tmp/helm-operator-output/"
+#    chart_ref: "/tmp/helm-operator/"
+#    values: 
+#      name: "{{ operator_name }}"
+#      namespace: "{{ operator_namespace }}"
+#      subscription:
+#        channel: "{{ subscription_channel }}"
+#        installPlanApproval: "{{ subscription_plan_approval }}"
+#        source:  "{{ subscription_source }}"
+#        sourceNamespace: "{{ subscription_source_namespace }}"
 
-- name: Validando template
-  command: ls -la /tmp/helm-operator-output/operator/templates/
+#- name: Validando template
+#  command: ls -la /tmp/helm-operator-output/operator/templates/
 
 #- name: Aplicando templates do operator
 #  kubernetes.core.k8s:
 #    definition: "{{ lookup('file', '{{ item }}') | from_yaml }}"
 #  with_fileglob:
 #    - "/tmp/helm-operator-output/operator/templates/*.yaml"
+
+#---
+#- name: Clonando template do operator
+#  ansible.builtin.git: 
+#    repo: "https://github.com/ansible-consulting-br/helm-operator.git"
+#    dest: "/tmp/helm-operator/"
+#    single_branch: yes
+#    version: main
+#  register: git_clone_result
+
+#- name: Verificando se o repositório foi clonado com sucesso
+#  assert:
+#    that:
+#      - git_clone_result.changed
+#    success_msg: "Repositório clonado com sucesso"
+#    fail_msg: "Falha ao clonar o repositório"
+
+#- name: Verificando se a role existe
+#  assert:
+#    that:
+#      - "'helm-operator' in ansible_roles"
+#    success_msg: "A role 'helm-operator' está disponível"
+#    fail_msg: "A role 'helm-operator' não está disponível"
+#  vars:
+#    ansible_roles: "{{ lookup('fileglob', '/tmp/helm-operator/roles/*', wantlist=true) }}"
