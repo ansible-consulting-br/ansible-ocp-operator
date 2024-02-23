@@ -1,2 +1,27 @@
 ---
-# tasks file for operator
+#Clonando template do operator para o diretorio
+- name: Clonando template do operator
+  ansible.builtin.git: 
+    repo: "https://github.com/ansible-consulting-br/helm-operator.git"
+    dest: "/tmp/helm-operator/"
+    single_branch: yes
+    version: main
+
+#- name: Gerando template do operator
+#  kubernetes.core.helm_template:
+#    output_dir: "/tmp/helm-operator-output/"
+#    chart_ref: "/tmp/helm-operator/"
+#    values: 
+#      name: "{{ operator_name }}"
+#      namespace: "{{ operator_namespace }}"
+#      subscription:
+#        channel: "{{ operator_channel }}"
+#        installPlanApproval: "{{ operator_approval }}"
+#        source:  "{{ operator_source }}"
+#        sourceNamespace: "{{ operator_source_namespace }}"
+
+#- name: Aplicando templates do operator
+#  kubernetes.core.k8s:
+#    definition: "{{ lookup('file', '{{ item }}') | from_yaml }}"
+#  with_fileglob:
+#    - "/tmp/helm-operator-output/operator/templates/*.yaml"
