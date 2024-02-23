@@ -23,7 +23,7 @@
         installPlanApproval: "{{ subscription_plan_approval }}"
         source:  "{{ subscription_source }}"
         sourceNamespace: "{{ subscription_source_namespace }}"
-  when: not directory_info.stat.exists
+  when: directory_info.stat.exists
 
 - name: Verificando se o repositório de saída foi criado com sucesso
   ansible.builtin.stat:
