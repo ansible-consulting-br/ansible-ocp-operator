@@ -11,9 +11,9 @@
     path: "/tmp/helm-operator/"
   register: directory_info
 
-- name: Debug
-  debug:
-    var: directory_info
+#- name: Debug
+#  debug:
+#    var: directory_info
   
 - name: Gerando template do operator
   kubernetes.core.helm_template:
@@ -34,6 +34,6 @@
     path: "/tmp/helm-operator-output/"
   register: directory_info_output
 
-- name: Debug
-  debug:
-    var: directory_info_output
+#- name: Debug
+#  debug:
+#    var: directory_info_output
