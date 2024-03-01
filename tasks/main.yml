@@ -18,7 +18,7 @@
   
 - name: Gerando template do operator
   kubernetes.core.helm_template:
-#    output_dir: "/tmp/helm-operator-output/"
+    output_dir: "/tmp/helm-operator-output/"
     chart_ref: "/tmp/helm-operator/"
     values: 
       name: "{{ operator_name }}"
