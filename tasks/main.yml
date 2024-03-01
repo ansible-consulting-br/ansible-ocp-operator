@@ -18,7 +18,7 @@
   
 - name: Gerando template do operator
   kubernetes.core.helm_template:
-#    output_dir: "/tmp/helm-output/"
+    output_dir: "/tmp/helm-output/"
     chart_ref: "/tmp/helm-operator/"
     values: 
       name: "{{ operator_name }}"
@@ -31,23 +31,24 @@
   register: result
   when: directory_info.stat.exists
 
-# - name: Verificando se o repositório de saída foi criado com sucesso
-#   ansible.builtin.stat:
-#     path: "/tmp/helm-operator-output/"
-#   register: directory_info_output
+- name: Verificando se o repositório de saída foi criado com sucesso
+  ansible.builtin.stat:
+    path: "/tmp/helm-operator-output/"
+  register: directory_info_output
 
-- name: Debug
-  debug:
-    var: result.stdout
-  when: debug_enabled
-
-- name: Escreve os templates em arquivo
-  ansible.builtin.copy:
-    dest: /tmp/operator.yaml
-    content: "{{ result.stdout }}"
+# - name: Debug
+#   debug:
+#     var: result.stdout
+#   when: debug_enabled
+#
+# - name: Escreve os templates em arquivo
+#   ansible.builtin.copy:
+#     dest: /tmp/operator.yaml
+#     content: "{{ result.stdout }}"
 
 - name: Aplica recursos no Openshift
   kubernetes.core.k8s:
     definition: "{{ lookup('file', '{{ item }}') | from_yaml }}"
   with_fileglob:
-    - "/tmp/*.yaml"
+    - "/tmp/helm-output/operator/templates/*.yaml"
+    - "/tmp/helm-output/operator/templates/*.yml"
