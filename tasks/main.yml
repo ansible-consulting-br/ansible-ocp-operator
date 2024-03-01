@@ -21,15 +21,7 @@
     output_dir: "{{ core_install_folder }}"
     chart_ref: "{{ core_install_git_dest }}"
     set_values: "{{ core_install_helm_set_values }}"
-    values_files: "{{ core_install_helm_values }}"
-    values: 
-      name: "{{ operator_name }}"
-      namespace: "{{ operator_namespace }}"
-      subscription:
-        channel: "{{ subscription_channel }}"
-        installPlanApproval: "{{ subscription_plan_approval }}"
-        source:  "{{ subscription_source }}"
-        sourceNamespace: "{{ subscription_source_namespace }}"
+    values_files: "{{ core_install_helm_values_files }}"
   register: result
   when: directory_info.stat.exists
 
@@ -54,4 +46,4 @@
     definition: "{{ lookup('file', '{{ item }}') | from_yaml }}"
   with_fileglob:
     - "{{ core_install_folder }}{{ core_install_folder_subpath }}/*.yml"
-    - "{{ core_install_folder }}/{{ core_install_folder_subpath }}/*.yaml"
+    - "{{ core_install_folder }}{{ core_install_folder_subpath }}/*.yaml"
