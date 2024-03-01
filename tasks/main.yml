@@ -1,14 +1,14 @@
 ---
 - name: Clonando template do operator
   ansible.builtin.git: 
-    repo: "https://github.com/ansible-consulting-br/helm-operator.git"
-    dest: "/tmp/helm-operator/"
+    repo: "{{ core_install_git_url }}"
+    dest: "{{ core_install_git_dest }}"
     single_branch: yes
     version: main
 
 - name: Verificando se o repositório foi clonado com sucesso
   ansible.builtin.stat:
-    path: "/tmp/helm-operator/"
+    path: "{{ core_install_git_dest }}"
   register: directory_info
 
 - name: Debug
@@ -18,8 +18,10 @@
   
 - name: Gerando template do operator
   kubernetes.core.helm_template:
-    output_dir: "/tmp/helm-output/"
-    chart_ref: "/tmp/helm-operator/"
+    output_dir: "{{ core_install_folder }}"
+    chart_ref: "{{ core_install_git_dest }}"
+    set_values: "{{ core_install_helm_set_values }}"
+    values_files: "{{ core_install_helm_values }}"
     values: 
       name: "{{ operator_name }}"
       namespace: "{{ operator_namespace }}"
@@ -33,7 +35,7 @@
 
 - name: Verificando se o repositório de saída foi criado com sucesso
   ansible.builtin.stat:
-    path: "/tmp/helm-operator-output/"
+    path: "{{ core_install_folder }}"
   register: directory_info_output
 
 # - name: Debug
@@ -48,7 +50,8 @@
 
 - name: Aplica recursos no Openshift
   kubernetes.core.k8s:
+    namespace: "{{ core_install_namespace }}"
     definition: "{{ lookup('file', '{{ item }}') | from_yaml }}"
   with_fileglob:
-    - "/tmp/helm-output/operator/templates/*.yaml"
-    - "/tmp/helm-output/operator/templates/*.yml"
+    - "{{ core_install_folder }}{{ core_install_folder_subpath }}/*.yml"
+    - "{{ core_install_folder }}/{{ core_install_folder_subpath }}/*.yaml"
