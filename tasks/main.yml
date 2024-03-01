@@ -11,9 +11,10 @@
     path: "/tmp/helm-operator/"
   register: directory_info
 
-#- name: Debug
-#  debug:
-#    var: directory_info
+- name: Debug
+  debug:
+    var: directory_info
+  when: debug_enabled
   
 - name: Gerando template do operator
   kubernetes.core.helm_template:
@@ -34,6 +35,14 @@
     path: "/tmp/helm-operator-output/"
   register: directory_info_output
 
-#- name: Debug
-#  debug:
-#    var: directory_info_output
+- name: Debug
+  debug:
+    var: directory_info_output
+  when: debug_enabled
+
+- name: Aplica recursos no Openshift
+  kubernetes.core.k8s:
+    definition: "{{ lookup('file', '{{ item }}') | from_yaml }}"
+  with_fileglob:
+    - "/tmp/helm-operator-output/*.yaml"
+    - "/tmp/helm-operator-output/*.yml"

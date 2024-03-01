@@ -1,2 +1,4 @@
 ---
 # defaults file for operator
+
+debug_enabled: false
