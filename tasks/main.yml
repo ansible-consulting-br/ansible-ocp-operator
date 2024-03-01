@@ -18,7 +18,7 @@
   
 - name: Gerando template do operator
   kubernetes.core.helm_template:
-    output_dir: "/tmp/helm-output/"
+#    output_dir: "/tmp/helm-output/"
     chart_ref: "/tmp/helm-operator/"
     values: 
       name: "{{ operator_name }}"
@@ -42,8 +42,8 @@
   when: debug_enabled
 
 - name: Escreve os templates em arquivo
-  copy:
-    dest: /tmp/helm-output/operator.yaml
+  ansible.builtin.copy:
+    dest: /tmp/operator.yaml
     content: "{{ result.stdout }}"
 
 - name: Aplica recursos no Openshift
