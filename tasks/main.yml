@@ -48,6 +48,6 @@
 
 - name: Aplica recursos no Openshift
   kubernetes.core.k8s:
-    definition: "{{ lookup('file', '{{ item }}') | from_yaml }}"
+    definition: "{{ lookup('files', '{{ item }}') | from_yaml }}"
   with_fileglob:
     - "/tmp/helm-output/*.yaml"
