@@ -1,2 +1,12 @@
 ---
 # vars file for operator
+
+debug_enabled: false
+core_install_mode:  #helm,file
+core_install_git_url: #https://github.com/ansible-consulting-br/helm-operator.git
+core_install_git_dest: #/tmp/helm-operator/
+core_install_folder: #/tmp/helm-output/
+core_install_folder_subpath: #operator/templates
+core_install_helm_values_files: 
+core_install_helm_set_values: 
+core_install_namespace: 

@@ -1,41 +1,17 @@
 ---
-- name: Clonando template
-  ansible.builtin.git: 
-    repo: "{{ core_install_git_url }}"
-    dest: "{{ core_install_git_dest }}"
-    single_branch: yes
-    version: main
-
-- name: Verificando se o repositório foi clonado com sucesso
-  ansible.builtin.stat:
-    path: "{{ core_install_git_dest }}"
-  register: directory_info
-
-- name: Debug
-  debug:
-    var: directory_info
-  when: debug_enabled
-  
-- name: Gerando template via Helm
-  kubernetes.core.helm_template:
-    output_dir: "{{ core_install_folder }}"
-    chart_ref: "{{ core_install_git_dest }}"
-    set_values: "{{ core_install_helm_set_values }}"
-    values_files: "{{ core_install_helm_values_files }}"
-  register: result
-  when: 
-    - directory_info.stat.exists
-    - core_install_mode == "helm"
-
-- name: Verificando se o diretório de saída foi criado com sucesso
-  ansible.builtin.stat:
-    path: "{{ core_install_folder }}"
-  register: directory_info_output
-
-- name: Aplicando recursos no Openshift
-  kubernetes.core.k8s:
-    namespace: "{{ core_install_namespace }}"
-    definition: "{{ lookup('file', '{{ item }}') | from_yaml }}"
-  with_fileglob:
-    - "{{ core_install_folder }}{{ core_install_folder_subpath }}/*.yml"
-    - "{{ core_install_folder }}{{ core_install_folder_subpath }}/*.yaml"
+- name: Install
+  include_role:
+    name: ocp-core
+  vars:
+    debug_enabled: false
+    core_install_namespace: teste-1 
+    core_install_mode: helm
+    core_install_git_url: https://github.com/ansible-consulting-br/helm-operator.git
+    core_install_git_dest: /tmp/consulting-br/helm-operator/
+    core_install_folder: /tmp/consulting-br/helm-output/
+    core_install_folder_subpath: operator/templates
+    core_install_helm_values_files: 
+      - /home/agusmao/dev/redhat/pratica/automation/ansible-helm/work/playbook/values/operator-example.yaml
+    core_install_helm_set_values: 
+      - value: "namespace={{ core_install_namespace }}"
+        value_type: string

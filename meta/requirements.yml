@@ -1,0 +1,6 @@
+---
+roles:
+  - name: ocp-core
+    src: git@github.com:ansible-consulting-br/ansible-ocp-core.git
+    version: development
+    scm: git
