@@ -1,5 +1,5 @@
 ---
-- name: Clonando template do operator
+- name: Clonando template
   ansible.builtin.git: 
     repo: "{{ core_install_git_url }}"
     dest: "{{ core_install_git_dest }}"
@@ -16,31 +16,23 @@
     var: directory_info
   when: debug_enabled
   
-- name: Gerando template do operator
+- name: Gerando template via Helm
   kubernetes.core.helm_template:
     output_dir: "{{ core_install_folder }}"
     chart_ref: "{{ core_install_git_dest }}"
     set_values: "{{ core_install_helm_set_values }}"
     values_files: "{{ core_install_helm_values_files }}"
   register: result
-  when: directory_info.stat.exists
+  when: 
+    - directory_info.stat.exists
+    - core_install_mode == "helm"
 
-- name: Verificando se o repositório de saída foi criado com sucesso
+- name: Verificando se o diretório de saída foi criado com sucesso
   ansible.builtin.stat:
     path: "{{ core_install_folder }}"
   register: directory_info_output
 
-# - name: Debug
-#   debug:
-#     var: result.stdout
-#   when: debug_enabled
-#
-# - name: Escreve os templates em arquivo
-#   ansible.builtin.copy:
-#     dest: /tmp/operator.yaml
-#     content: "{{ result.stdout }}"
-
-- name: Aplica recursos no Openshift
+- name: Aplicando recursos no Openshift
   kubernetes.core.k8s:
     namespace: "{{ core_install_namespace }}"
     definition: "{{ lookup('file', '{{ item }}') | from_yaml }}"
