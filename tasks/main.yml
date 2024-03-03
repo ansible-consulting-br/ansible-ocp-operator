@@ -27,3 +27,31 @@
       status: 'False'
       reason: AllCatalogSourcesHealthy
   register: operator_info
+
+
+
+- name: "Common :: Wait Operator"
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: ClusterServiceVersion
+    name: "{{ operator_info.resources[0].status.currentCSV }}"
+    namespace: "{{ operator_install_namespace }}"
+    wait: yes
+    wait_sleep: 20
+    wait_timeout: 180
+  register: csv_info
+
+- name: "Common :: Wait Operator Deployment"
+  kubernetes.core.k8s_info:
+    api_version: apps/v1
+    kind: Deployment
+    name: "{{ csv_info.resources[0].spec.install.spec.deployments[0].name }}"
+    namespace: "{{ operator_install_namespace }}"
+    wait: yes
+    wait_sleep: 20
+    wait_timeout: 180
+    wait_condition:
+      type: Available
+      status: 'True'
+      reason: MinimumReplicasAvailable
+  register: operator_deployment_info
