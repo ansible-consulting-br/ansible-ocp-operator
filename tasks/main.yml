@@ -36,7 +36,7 @@
   kubernetes.core.k8s_json_patch:
     api_version: operators.coreos.com/v1alpha1
     kind: InstallPlan
-    namespace: "{{ operator_namespace }}"
+    namespace: "{{ operator_install_namespace }}"
     name: "{{ operator_info.resources[0].status.installplan.name }}"
     patch:
       - op: replace
