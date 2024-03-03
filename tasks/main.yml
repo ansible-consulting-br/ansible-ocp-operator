@@ -2,6 +2,16 @@
 - name: "Operator :: Instala Operator"
   include_role:
     name: ocp-core
+  vars:
+    debug_enabled: false
+    core_install_mode: "{{ operator_install_mode }}"
+    core_install_git_url: "{{ operator_install_git_url }}"
+    core_install_git_dest: "{{ operator_install_git_dest }}"
+    core_install_folder: "{{ operator_install_folder }}"
+    core_install_folder_subpath: "{{ operator_install_folder_subpath }}"
+    core_install_helm_values_files: "{{ operator_install_helm_values_files }}"
+    core_install_helm_set_values: "{{ operator_install_helm_set_values }}"
+    core_install_namespace: "{{ operator_install_namespace }}"
 
 - name: "Operator :: Aguarda Subscription"
   kubernetes.core.k8s_info:
