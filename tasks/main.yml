@@ -1,17 +1,19 @@
 ---
-- name: Install
+- name: "Operator :: Instala Operator"
   include_role:
     name: ocp-core
-  vars:
-    debug_enabled: false
-    core_install_namespace: teste-1 
-    core_install_mode: helm
-    core_install_git_url: https://github.com/ansible-consulting-br/helm-operator.git
-    core_install_git_dest: /tmp/consulting-br/helm-operator/
-    core_install_folder: /tmp/consulting-br/helm-output/
-    core_install_folder_subpath: operator/templates
-    core_install_helm_values_files: 
-      - /home/agusmao/dev/redhat/pratica/automation/ansible-helm/work/playbook/values/operator-example.yaml
-    core_install_helm_set_values: 
-      - value: "namespace={{ core_install_namespace }}"
-        value_type: string
+
+- name: "Operator :: Aguarda Subscription"
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: Subscription
+    name: "{{ operator_install_name }}"
+    namespace: "{{ operator_install_namespace }}"
+    wait: yes
+    wait_sleep: 20
+    wait_timeout: 360
+    wait_condition:
+      type: CatalogSourcesUnhealthy
+      status: 'False'
+      reason: AllCatalogSourcesHealthy
+  register: operator_info

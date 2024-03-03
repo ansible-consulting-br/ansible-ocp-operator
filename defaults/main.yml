@@ -1,2 +1,12 @@
 ---
 # defaults file for operator
+debug_enabled: false
+operator_install_mode:  #helm,file
+operator_install_git_url: #https://github.com/ansible-consulting-br/helm-operator.git
+operator_install_git_dest: #/tmp/helm-operator/
+operator_install_folder: #/tmp/helm-output/
+operator_install_folder_subpath: #operator/templates
+operator_install_helm_values_files: 
+operator_install_helm_set_values: 
+operator_install_namespace: 
+operator_install_name: 
